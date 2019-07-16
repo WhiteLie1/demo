@@ -2,6 +2,7 @@ const fileCache = require('think-cache-file');
 const nunjucks = require('think-view-nunjucks');
 const fileSession = require('think-session-file');
 const mysql = require('think-model-mysql');
+const ws = require('think-websocket-ws');//导包
 const {Console, File, DateFile} = require('think-logger3');
 const path = require('path');
 const isDev = think.env === 'development';
@@ -111,3 +112,20 @@ exports.logger = {
     filename: path.join(think.ROOT_PATH, 'logs/app.log')
   }
 };
+//wx.js的配置问题
+exports.websocket = {
+  type: 'ws',
+  common: {
+    // common config
+  },
+  ws: {
+    handle: ws,
+    path: '/ws',
+    messages: [{ //接收websocket的信息
+      close: '/ws/close',//closeaction的设置
+      open: '/ws/open',//关闭和开启连接的接口
+      message: '/ws/message', //这里改成 message
+      addUser:'/ws/addUser'
+    }]
+  }
+}

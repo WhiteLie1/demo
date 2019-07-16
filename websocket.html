@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <center><h2>这是一个简单的聊天界面！</h2></center>
+    <h3>当前游客id:
+        <input id="id">
+    <input id="numb">
+    <button type="button" onclick="myFunction()">发送消息</button>
+    </h3>
+    <button type="button" onclick="myFunction1()">关闭WebSocket连接</button>
+    <h4>系统消息：WebSocket连接成功</h4>
+    <h5>系统消息：</h5>
+<p id ="demo"></p>
+
+<script>
+    function myFunction(){
+        var x ,text;
+        //获取id =“num" 的输入字段的值
+        x = document.getElementById("numb").value;
+        //如果发送为空，则发送失败
+        if(isNaN(x)==' '){
+            text="发送内容不能为空！请重新输入。。。"
+        }
+        document.getElementById("demo").innerHTML=text;
+    }
+
+    function myFunction1(){
+
+    }
+
+    
+
+</script>
+
+
+</body>
+</html>
