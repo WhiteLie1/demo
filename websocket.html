@@ -1,37 +1,114 @@
 <!DOCTYPE html>
-<html>
-<body>
-    <center><h2>这是一个简单的聊天界面！</h2></center>
-    <h3>当前游客id:
-        <input id="id">
-    <input id="numb">
-    <button type="button" onclick="myFunction()">发送消息</button>
-    </h3>
-    <button type="button" onclick="myFunction1()">关闭WebSocket连接</button>
-    <h4>系统消息：WebSocket连接成功</h4>
-    <h5>系统消息：</h5>
-<p id ="demo"></p>
+<html lang="en">
 
-<script>
-    function myFunction(){
-        var x ,text;
-        //获取id =“num" 的输入字段的值
-        x = document.getElementById("numb").value;
-        //如果发送为空，则发送失败
-        if(isNaN(x)==' '){
-            text="发送内容不能为空！请重新输入。。。"
+<head>
+  <title>WebSocket</title>
+  <center><h2>这是一个简单的聊天界面！</h2></center>
+
+<style>
+        .left {
+          text-align: left;
         }
-        document.getElementById("demo").innerHTML=text;
+        .right {
+          text-align: right;
+        }
+        .record {
+          margin: 12px 0;
+          padding: 20px;
+          background: #ccc;
+        }    
+        .id {
+          font-family: 'Arial';
+        }
+        .content {
+          padding: 20px;
+          background: #efefef;
+        }
+      </style>
+      </head>
+<body>
+        
+  <div class="chat-record"></div>
+  <div class="menu-bar"> 
+    <span class="userid"></span>
+    <input type="text" name='nickname' placeholder="输入你的昵称" value='Unknow'>
+    <input type="text" name='content' placeholder='请输入消息'>
+    <button class="send">发送消息</button>
+    <button class="close">关闭WebSocket连接</button>
+  </div>
+  <h4>系统消息：WebSocket连接成功</h4>
+  <h5>系统消息游客</h5>
+  <script>
+      //一开始的请求
+    var ws = new WebSocket('ws:localhost:8360/ws')
+    var userid = genId()
+    // id 生成器
+    function genId() {
+      return Math.floor(Math.random() * 10000000)
     }
+    document.querySelector('.userid').textContent = "当前游客ID: " + userid
 
-    function myFunction1(){
-
+    var chat = document.querySelector('.chat-record')
+    ws.onmessage = function (e) {
+      // debug
+      //console.log(e)
+      // 接收并转换数据格式
+      let res = JSON.parse(e.data)
+      
+      // 创建dom元素
+      let record = document.createElement('div')
+      let userinfo = document.createElement('div')
+      let nickname = document.createElement('span')
+      let id = document.createElement('span')
+      let content = document.createElement('div')
+      let date = document.createElement('div')
+      //昵称的设置
+      nickname.textContent = res.data.nickname
+      id.classList.add('id')
+      id.textContent = "当前ID:" + res.data.id + "："
+      content.classList.add('content')
+      content.textContent =  res.data.content
+      date.textContent = new Date(res.data.date)
+      userinfo.appendChild(nickname)
+      userinfo.appendChild(id)
+      record.appendChild(userinfo)
+      record.appendChild(content)
+      record.appendChild(date)
+      if (res.data.id == userid)//放在右边，放在左边
+        record.classList.add('right')
+      else
+        record.classList.add('left')
+        
+      record.classList.add('record')
+      chat.appendChild(record)
     }
-
+    // 事件绑定
+    document.querySelector('.send').onclick = function () {
+      // 获取表单数据
+      let nickname = document.querySelector("input[name='nickname']").value
+      let content = document.querySelector("input[name='content']").value
+      if (isNaN(content)==' ')
+      {
+          text="发送内容不能为空，请重新输入！"
+      }
+      ws.send(JSON.stringify({
+        event: 'message',
+        data: {
+          id: userid,
+          nickname: nickname,
+          content: content,
+          date: Date.now()
+        }
+      })
+      )
+    }
+    //关闭连接
+    document.querySelector('.close').onclick = function () {
+        alert("您按下了断开连接按钮！");
+      ws.close()
+    }
     
-
-</script>
-
-
+  </script>
 </body>
+
 </html>
