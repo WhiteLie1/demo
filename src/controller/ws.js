@@ -25,13 +25,13 @@ module.exports = class extends Base {
     //userList.push(id);
     console.log('游客上线了吗');
     //this.broadcast('online',`游客${id}ws游客上线了`);
-    this.broadcast('offline',`游客ws${id}上线了`);//这里是系统广播上线
+    this.broadcast('online',`游客${id}上线了`);//这里是系统广播上线
   }
   offlineAction(){
     const id = this.wsData.data.id;
     // userList = userList.filter(userId => userId !== id);
     console.log('游客下线了吗');
-    this.broadcast('offline',`游客ws${id}下线了`);
+    this.broadcast('offline',`游客${id}下线了`);
   }
   //添加用户吗？ 如何去获取一个文本输入的属性
   // on message的改变

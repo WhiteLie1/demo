@@ -52,9 +52,9 @@ websocket.onmessage = function(event)
 										 <div style="text-align: left; font-size: 25px">${data.data.message}</div>`);
       }
     } else if (data.event === 'online') {
-				setMessageInnerHTML(`<div style="text-align: center">系统消息：游客html${data.data}上线了！</div>`)
+				setMessageInnerHTML(`<div style="text-align: center">系统消息:${data.data}</div>`)
 			} else if (data.event === 'offline') {
-				setMessageInnerHTML(`<div style="text-align: center">系统消息：游客html${data.data}下线啦！</div>`)
+				setMessageInnerHTML(`<div style="text-align: center">系统消息:${data.data}</div>`)
 			} else if (data.event === 'open') {
 				//websocket建立成功后发送上线消息
 				const body = { event: 'online', data: { id: id } }
