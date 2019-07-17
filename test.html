@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <center><h2>这是一个简单的聊天界面！</h2></center>
+    <center>当前游客ID:<input id = "account" disabled /> <!--禁止id的手写输入-->
+    <input id = "text" type="text"/>
+    <button onclick ="send()">发送消息</button>
+    <button onclick ="closeWebSocket()">关闭webSocket连接</button>
+    </center>
+    <div id = "message"style="width:100%"></div>
+</body>
+<script type = "text/javascript">
+let websocket = new WebSocket('ws://localhost:8360/ws');//websocket的连接
+//这里定义了一个新的 websocket之后，下面用的变量名就是 websocket了
+const id = Math.round(Math.random()*10000000)
+document.getElementById('account').value = id //得到随机的id值
+//连接错误的回调方法
+websocket.onerror = function()
+{
+    setMessageInnerHTML(`<div style="text-align:center>"系统消息，连接错误！`)
+};
+//连接成功建立的回调方法
+//websocket服务打开
+websocket.onopen=function(){       
+			setMessageInnerHTML(`<div style="text-align: center">系统消息：WebSocket连接成功</div>`);
+    }
+    
+//连接关闭的回调方法
+websocket.onclose = function()
+  {
+    setMessageInnerHTML(`<div style="text-align: center">系统消息：WebSocket连接关闭</div>`)
+  }
+  //将消息显示在网页上
+  function setMessageInnerHTML(a) //消息的叠加
+      {
+        document.getElementById('message').innerHTML += a;//把收到的同一id的消息一行行的叠加上去
+      }
+//老师写的收到消息的回调方法
+websocket.onmessage = function(event)
+{ //onmessage是websocket自带的方法
+    console.log(event);//测试能不能拿到数据
+      const data = JSON.parse(event.data)
+      if(data.event ==='message')
+      {
+        if(data.data.id === id)
+        {
+            setMessageInnerHTML(`<div style="text-align:right">${data.data.time} 游客${data.data.id}</div>
+            <div style="text-align:right;font-size:25px">${data.data.message}</div>`);
+      }else{
+            //setMessageInnerHTML(`<div style="text-align:left">游客${data.data}`);
+                setMessageInnerHTML(`<div style="text-align: left"> 游客${data.data.id} ${data.data.time} </div>
+										 <div style="text-align: left; font-size: 25px">${data.data.message}</div>`);
+      }
+    } else if (data.event === 'online') {
+				setMessageInnerHTML(`<div style="text-align: center">系统消息：游客html${data.data}上线了！</div>`)
+			} else if (data.event === 'offline') {
+				setMessageInnerHTML(`<div style="text-align: center">系统消息：游客html${data.data}下线啦！</div>`)
+			} else if (data.event === 'open') {
+				//websocket建立成功后发送上线消息
+				const body = { event: 'online', data: { id: id } }
+				websocket.send(JSON.stringify(body));
+			}
+    }
+    /*}else if(data.event ==='online')
+    {
+        setMessageInnerHTML(`<div style="text-align: center">系统消息：游客html${data.data}上上上线了</div>`)
+			} else if (data.event === 'offline') {
+				setMessageInnerHTML(`<div style="text-align: center">系统消息:游客html${data.data}下下下下线了</div>`)
+    }else if(data.event ==='open')
+    {
+        //websocket建立成功后发送上线信息
+        const body = {event:'online',data:{id:id}}
+        websocket.send(JSON.stringify(body));
+    }*/     
+      //websocket建立连接成功后发送上线数据
+      //const body = {event:'online',data:{id:id}}
+      //websocket.send(JSON.stringify(body));
+        //监听窗口关闭事件，当窗口关闭，主动关闭websocket连接
+        window.onbeforeunload = function()
+        {
+            closeWebSocket();
+        }
+
+        function closeWebSocket()
+      {
+        //webcosket关闭之前发送下线信息
+        alert("您按下了断开连接按钮！");
+        const body = { event:'offline',data:{id:id}}
+        websocket.send(JSON.stringify(body));
+        websocket.close();
+      }
+      function send()
+      {//发送消息函数
+        if(document.getElementById('text').value ===''){
+            alert('发送内容不能为空')
+            return 
+        }
+
+          //const body = {event:'message',data:{data:document.getElementById('text').value}}
+          const data = {id:id,message:document.getElementById('text').value}
+          document.getElementById('text').value ='';
+          const body = {event:'message',data:data}
+        websocket.send(JSON.stringify(body));
+      }
+
+        //websocket服务打开
+		/*websocket.onopen=function(){       
+			setMessageInnerHTML(`<div style="text-align: center">系统消息：WebSocket连接成功</div>`);
+		}
+		//websocket服务关闭
+		websocket.onclose=function() {
+			setMessageInnerHTML(`<div style="text-align: center">系统消息：WebSocket连接关闭</div>`)
+		}*/
+      
+      
+      
+    
+</script>
+
+
+
+</html>

@@ -53,7 +53,7 @@
       // debug
       //console.log(e)
       // 接收并转换数据格式
-      let res = JSON.parse(e.data)
+      let res = JSON.parse(e.data)//onmessage如何工作的？
       
       // 创建dom元素
       let record = document.createElement('div')
@@ -83,7 +83,7 @@
       chat.appendChild(record)
     }
     // 事件绑定
-    document.querySelector('.send').onclick = function () {
+    document.querySelector('.send').onclick = function () { //因为用的是class,所以，要用 .send来触发，class 可以有多个，而id只能有一个
       // 获取表单数据
       let nickname = document.querySelector("input[name='nickname']").value
       let content = document.querySelector("input[name='content']").value
@@ -107,6 +107,8 @@
         alert("您按下了断开连接按钮！");
       ws.close()
     }
+    
+  
     
   </script>
 </body>

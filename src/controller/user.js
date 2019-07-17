@@ -39,6 +39,8 @@ module.exports = class extends Base {
     async findAction(){
     const userId = this.get('user_id');
     const userList = await this.model('user').where({user_id:userId}).select();
+
+    
     }
     
 };

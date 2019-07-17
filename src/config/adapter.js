@@ -125,7 +125,9 @@ exports.websocket = {
       close: '/ws/close',//closeaction的设置
       open: '/ws/open',//关闭和开启连接的接口
       message: '/ws/message', //这里改成 message
-      addUser:'/ws/addUser'
+      //addUser:'/ws/addUser',
+      online:'/ws/online',//上线通知
+      offline:'/ws/offline'//下线通知
     }]
   }
 }
